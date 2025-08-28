@@ -4,3 +4,4 @@ It includes various functionalities like:
 - Saved password in the form of hash in the database.(Bcryptjs)
 - Authentication with the token to make it more secure. (Jsonwebtoken)
 - Login and Logout functionalities.
+- Password reset functionalities with the OTP verification
