@@ -1,4 +1,4 @@
-# Login and Signup system 
+# 🚀 Login and Signup system 
 It includes various functionalities like: 
 - Verify email with the email otp(One Time Password)(nodemailer)
 - Saved password in the form of hash in the database.(Bcryptjs)
