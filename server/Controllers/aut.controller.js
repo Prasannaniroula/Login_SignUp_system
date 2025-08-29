@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import userModel from "../models/user.models";
 
 export const register = async(req, res)=>{
-    const [ name, email, password] = req.body;
+    const {name, email, password} = req.body;
 
     if(!name || !email || !password){
         return res.json({success:false, msg:"Missing Details"})
@@ -21,8 +21,19 @@ export const register = async(req, res)=>{
       const user= new userModel({name, email, password:hashPassword})
       await user.save();
 
+      const token = jwt.sign({id: user._id}, process.env.JWT_SECRET,{expiresIn:'7d'})
+      res.cookie('token',token,{
+        httpOnly:true,
+        secure: process.env.NODE_ENV === 'production',
+        samesite:process.env.NODE_ENV ==='production' ? "none" : "strict",
+        maxAge : 7*24*60*60*1000,
+
+      });
+
+      return res.status(200)
+
     } catch (error) {
-        res.json({success:false, msg:error.msg})
+       return res.status().json({success:false, msg:error.message})
         
     }
 }
