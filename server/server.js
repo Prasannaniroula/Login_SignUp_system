@@ -24,7 +24,7 @@ app.get('/',(req,res)=>{
     res.send("hello welcome to the api working")
 })
 
-if(connectDB){
+if(isConnected){
     console.log("database connected successfully")
 app.listen(port,()=>{
     console.log(`Your server is running on: http://localhost:${port}`)

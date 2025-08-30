@@ -6,3 +6,5 @@ It includes various functionalities like:
 - Authentication with the token to make it more secure. (Jsonwebtoken)
 - Login and Logout functionalities.
 - Password reset functionalities with the OTP verification
+
+<img src="./server/Controllers/Screenshot 2025-08-30 at 11.55.52 PM.png" width="300" />
