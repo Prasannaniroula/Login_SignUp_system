@@ -7,4 +7,6 @@ It includes various functionalities like:
 - Login and Logout functionalities.
 - Password reset functionalities with the OTP verification
 
+# E-mail verrification Screenshot 
+
 <img src="./server/Controllers/Screenshot 2025-08-30 at 11.55.52 PM.png" width="600" height="400" />
