@@ -134,24 +134,83 @@ export const verifyOtp = async(req,res)=>{
    const otp=String(Math.floor(100000 + Math.random()*900000));
    user.verifyOtp= otp;
    user.verifyOtpExpireAt= Date.now() + 10*60*1000
+   const otpHtml = otp
+   .split("")
+   .map(
+     (digit) => `
+       <span style="
+         display:inline-block;
+         margin:5px;
+         padding:15px 20px;
+         font-size:20px;
+         font-weight:bold;
+         background-color:#f3f3f3;
+         border-radius:8px;
+         border:1px solid #ddd;
+       ">${digit}</span>`
+   )
+   .join("");
 
    await user.save();
    const mailOptions ={
     from: process.env.SENDER_EMAIL,
     to:user.email,
     subject:'Verify OTP!! to Mern Authentication.',
-    text:`<>
-    <h1>Your OTP is:</h1>
-       <div></div>
-    </>
-      
-     `
+    html:
+    <div style="font-family:sans-serif; text-align:center;">
+          <h2>🔐 Your OTP Code</h2>
+          <p>Please use the following OTP to verify your account:</p>
+          <div style="margin-top:20px;">
+            ${otpHtml}
+          </div>
+          <p style="margin-top:20px; color:gray; font-size:12px;">
+            This OTP will expire in 10 minutes.
+          </p>
+        </div>
   } 
 
+  const sendemail = await transporter.sendMail(mailOptions);
+  if(!sendemail){
+    return res.status(500).json({success:false, msg:"couldn't send email"});
+  }
 
+  return res.status(200).json({success:true, msg:"successfully send otp"})
 
     
   } catch (error) {
     return res.status(400).json({success:false, message:error.message})
+  }
+}
+
+
+export const verifyEmail = async(req,res)=>{
+  const {userId, otp} = req.body;
+  
+  if(!userId || !otp){
+    return res.status(400).json({success:false, message:"Missing Details"});
+  }
+  try {
+    const user = await userModel.findById(userId);
+    if(!user){
+      return res.status(501).json({success:false,message:'user not found'});
+    }
+
+    if(user.verifyOtp === ''|| user.verifyOtp !== otp){
+      return res.status(400).json({success:false, message:'Invalid OTP'}) ;
+     }
+    if(user.verifyOtpExpireAt < Date.now()){
+      return res.status(401).json({success:false,message:'Expired otp'});
+    }
+
+    user.isAccountVerified = true
+    user.verifyOtp = ''
+    user.verifyOtpExpireAt= 0;
+
+    await user.save();
+    return res.status(200).json({success:false,message:'Email verified successfully'});
+
+    
+  } catch (error) {
+    return res.status(400).json({success:false, message:error.message});
   }
 }
