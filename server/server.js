@@ -3,23 +3,30 @@ import cors from "cors";
 import cookieParser from "cookie-parser"
 import "dotenv/config";
 import connectDB from "./config/mongodb.js";
+import authRouter from "./routes/auth.routes.js";
 
 
 const app = express();
 const port = process.env.PORT || 8000 ;
 
-connectDB();
+const isConnected= connectDB();
 
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({credentials:true}));
 
 
+// API Endpoints
+app.get('/',(req,res)=>res.send('Api working'));
+app.use('/api/auth', authRouter)
+
 app.get('/',(req,res)=>{
     res.send("hello welcome to the api working")
 })
 
-
+if(connectDB){
+    console.log("database connected successfully")
 app.listen(port,()=>{
     console.log(`Your server is running on: http://localhost:${port}`)
 })
+}
