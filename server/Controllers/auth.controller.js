@@ -122,4 +122,36 @@ export const logout = async( req, res)=>{
   }
 }
 
+export const verifyOtp = async(req,res)=>{
+  try {
+    const {userId} = req.body;
+    const user = await userModel.findById(userId)
+    if(user.isAccountVerified){
 
+       return res.json({success:false, message:"Account already verified"});
+    }
+
+   const otp=String(Math.floor(100000 + Math.random()*900000));
+   user.verifyOtp= otp;
+   user.verifyOtpExpireAt= Date.now() + 10*60*1000
+
+   await user.save();
+   const mailOptions ={
+    from: process.env.SENDER_EMAIL,
+    to:user.email,
+    subject:'Verify OTP!! to Mern Authentication.',
+    text:`<>
+    <h1>Your OTP is:</h1>
+       <div></div>
+    </>
+      
+     `
+  } 
+
+
+
+    
+  } catch (error) {
+    return res.status(400).json({success:false, message:error.message})
+  }
+}
