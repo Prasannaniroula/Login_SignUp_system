@@ -2,6 +2,7 @@ import "dotenv/config";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import userModel from "../models/user.models.js";
+import transporter from "../config/nodemailer.js";
 
 export const register = async(req, res)=>{
     const {fullname, email, password} = req.body;
@@ -32,6 +33,21 @@ export const register = async(req, res)=>{
         maxAge : 7*24*60*60*1000,
 
       });
+
+      // sending welcome email
+
+      const mailOptions ={
+        from: process.env.SENDER_EMAIL,
+        to:email,
+        subject:'Welcome!! to Mern Authentication.',
+        text:`Welcom to Mern Authentication website. Your account has been created with email id:${email}`
+
+      } 
+      console.log(process.env.SENDER_EMAIL);
+      const sendemail = await transporter.sendMail(mailOptions);
+      if(!sendemail){
+        return res.status(500).json({success:false, msg:"couldn't send email"});
+      }
 
       return res.status(200).json({success:true, msg:"successfully registered"})
 
@@ -98,10 +114,12 @@ export const logout = async( req, res)=>{
 
     })
 
-    return res.status(400).json({success:true, msg:"Logged out"})
+    return res.status(200).json({success:true, msg:"Logged out"})
     
   } catch (error) {
     return res.status(400).json({success:false,msg:error.message})
     
   }
 }
+
+
