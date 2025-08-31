@@ -198,7 +198,8 @@ export const verifyOtp = async (req, res) => {
 };
 
 export const verifyEmail = async (req, res) => {
-  const { userId, otp } = req.body;
+  const { otp } = req.body;
+  const userId = req.userId;
 
   if (!userId || !otp) {
     return res.status(400).json({ success: false, message: "Missing Details" });
@@ -225,7 +226,7 @@ export const verifyEmail = async (req, res) => {
     await user.save();
     return res
       .status(200)
-      .json({ success: false, message: "Email verified successfully" });
+      .json({ success: true, message: "Email verified successfully" });
   } catch (error) {
     return res.status(400).json({ success: false, message: error.message });
   }
