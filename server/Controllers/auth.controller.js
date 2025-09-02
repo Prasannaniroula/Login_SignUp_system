@@ -301,7 +301,7 @@ if (!sendemail) {
     .json({ success: false, msg: "couldn't send email" });
 }
 
-return res.json({success:true, message:"OTP sent to your school"})
+return res.json({success:true, message:"OTP sent to your email"})
 
 
   
@@ -322,7 +322,7 @@ export const resetPassword = async(req,res)=>{
       return res.json({success:false, message:"User not found"});
     }
 
-    if(user.resetOtp === "" || user.resetOtp !== otp){
+    if(user.resetOtp === "" || String(user.resetOtp) !== String(otp)){
       return res.json({success:false, message:"Invalid OTP"});
     }
 
@@ -337,7 +337,7 @@ export const resetPassword = async(req,res)=>{
 
     await user.save();
 
-    return res.json({success:true, message:"Password has been successfully"});
+    return res.json({success:true, message:"Password has been successfully changed"});
     
   } catch (error) {
     return res.json({success:false, message:error.message})
