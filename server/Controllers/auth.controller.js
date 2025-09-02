@@ -240,3 +240,107 @@ export const isAuthenticated = async(req,res)=>{
     return res.status(400).json({ success: false, message: error.message });
   }
 }
+
+
+//send password reset otp
+export const sendResetOtp = async(req,res)=>{
+  const {email} = req.body;
+
+  if(!email){
+    return res.json({success:false, message:"Email is required"})
+  }
+ try {
+  const user = await userModel.findOne({email});
+  if(!user){
+    return res.json({success:false, message:"User Details not found"})
+  }
+
+  const otp = String(Math.floor(100000 + Math.random() * 900000));
+  user.resetOtp = otp;
+  user.resetOtpExpireAt = Date.now() + 10 * 60 * 1000;
+  await user.save();
+
+  const otpHtml = otp
+  .split("")
+  .map(
+    (digit) => `
+   <span style="
+     display:inline-block;
+     margin:5px;
+     padding:15px 20px;
+     font-size:20px;
+     font-weight:bold;
+     background-color:#f3f3f3;
+     border-radius:8px;
+     border:1px solid #ddd;
+   ">${digit}</span>`
+  )
+  .join("");
+
+const mailOptions = {
+  from: process.env.SENDER_EMAIL,
+  to: user.email,
+  subject: "Verify OTP!! to Mern Authentication.",
+  html: `
+<div style="font-family:sans-serif; text-align:center;">
+      <h2>🔐 Your OTP Code</h2>
+      <p>Please use the following OTP to reset your password:</p>
+      <div style="margin-top:20px;">
+        ${otpHtml}
+      </div>
+      <p style="margin-top:20px; color:gray; font-size:12px;">
+        This OTP will expire in 10 minutes.
+      </p>
+    </div>`,
+};
+
+const sendemail = await transporter.sendMail(mailOptions);
+if (!sendemail) {
+  return res
+    .status(500)
+    .json({ success: false, msg: "couldn't send email" });
+}
+
+return res.json({success:true, message:"OTP sent to your school"})
+
+
+  
+ } catch (error) {
+  return res.json({success:false, message:error.message})
+ }
+}
+
+export const resetPassword = async(req,res)=>{
+  const {email,otp, newPassword}= req.body ;
+
+  if(!email || !otp || !newPassword){
+    return res.json({success:false, message:"Email, otp and new password are required"});
+  }
+  try {
+    const user = await userModel.findOne({email});
+    if(!user){
+      return res.json({success:false, message:"User not found"});
+    }
+
+    if(user.resetOtp === "" || user.resetOtp !== otp){
+      return res.json({success:false, message:"Invalid OTP"});
+    }
+
+    if(user.resetOtpExpireAt < Date.now()){
+      return res.json({success:false, message:"Expired Otp"});
+    }
+
+    const hashedPassword = await  bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+    user.resetOtp='';
+    user.resetOtpExpireAt='';
+
+    await user.save();
+
+    return res.json({success:true, message:"Password has been successfully"});
+    
+  } catch (error) {
+    return res.json({success:false, message:error.message})
+    
+  }
+}
