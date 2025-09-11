@@ -33,12 +33,17 @@ function login() {
                <img src={assets.lock_icon} alt='' />
                <input className="text-white text-md rounded-full outline-none px-10" type="password" placeholder="Password" required />
              </div>
-             <div className="flex justify-center">
-               <button className="bg-blue-600 px-10 py-2 text-indigo-100 rounded-full ">Submit</button>
-               </div>
+               <p className="mb-4 text-indigo-500 cursor-pointer">Forgot password?</p>
+               <button className="w-full py-2.5 rounded-full bg-gradient-to-r from-indigo-500 to-indigo-900 text-white font-medium">{state}</button>
 
 
         </form>
+        <p className="text-gray-400 text-center text-xs mt-4">Already have an account?{' '} 
+          <span className="text-blue-400 cursor-pointer underline">Login here</span></p>
+
+
+       <p className="text-gray-400 text-center text-xs mt-4">Don't have an account?{' '}
+         <span className="text-blue-400 cursor-pointer underline">Sign Up</span></p>
       </div>
     </div>
   );
