@@ -3,6 +3,7 @@ import { assets } from "../assets/assets";
 import { useNavigate } from 'react-router-dom';
 import { AppContent } from "../context/Appcontext";
 import { toast } from "react-toastify";
+import axios from "axios";
 
 function Login() {
    const navigate = useNavigate();
@@ -18,26 +19,40 @@ function Login() {
   try {
     e.preventDefault();
 
-    axios.defaults.withCrediantials= true;
+    axios.defaults.withCredentials= true;
 
     if(state === 'Sign Up'){
       const {data} = await axios.post(backendUrl + '/api/auth/register', {name, email, password})
       if(data.success){
         setIsLoggedin(true);
         navigate('/');
+        toast.success(data.message);
+      }
+      else{
+        toast.error(data.message);
       }
     }
     else{
-      toast.error(data.message)
+      const {data} = await axios.post(backendUrl + '/api/auth/login', {email, password})
+      if(data.success){
+        setIsLoggedin(true);
+        navigate('/');
+      }
+      else{
+        toast.error(data.message);
+      }
+   
 
     }
     
   } catch (error) {
-    toast.error(data.message)
-    
+    if (error.response && error.response.data) {
+      toast.error(error.response.data.message);  // Backend message
+    } else {
+      toast.error(error.message);  // General JS error
+    }
   }
- }
-
+}
 
 
   return (
@@ -65,7 +80,7 @@ function Login() {
           <div className="mb-4 flex items-center gap-3  w-full px-5 py-2.5 rounded-full bg-[#333A5C]">
             <img src={assets.person_icon} alt="" />
             <input
-              onClick={e => setName(e.target.value)}
+              onChange={e => setName(e.target.value)}
               value={name}
               className="text-white text-md rounded-full outline-none px-10 "
               type="text"
@@ -78,7 +93,7 @@ function Login() {
           <div className="mb-4 flex items-center gap-3  w-full px-5 py-2.5 rounded-full bg-[#333A5C]">
             <img src={assets.mail_icon} alt="" />
             <input
-              onClick={e => setEmail(e.target.value)}
+              onChange={e => setEmail(e.target.value)}
               value={email}
               className="text-white text-md rounded-full outline-none px-10 "
               type="email"
@@ -89,7 +104,7 @@ function Login() {
           <div className="mb-4 flex items-center gap-3  w-full px-5 py-2.5 rounded-full bg-[#333A5C]">
             <img src={assets.lock_icon} alt="" />
             <input
-              onClick={e => setPassword(e.target.value)}
+              onChange={e => setPassword(e.target.value)}
               value={password}
               className="text-white text-md rounded-full outline-none px-10"
               type="password"

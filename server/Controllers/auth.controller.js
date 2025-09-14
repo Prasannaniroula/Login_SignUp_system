@@ -5,9 +5,9 @@ import userModel from "../models/user.models.js";
 import transporter from "../config/nodemailer.js";
 
 export const register = async (req, res) => {
-  const { fullname, email, password } = req.body;
+  const { name, email, password } = req.body;
 
-  if (!fullname || !email || !password) {
+  if (!name || !email || !password) {
     console.log("Details are missing check it!");
     return res.json({ success: false, msg: "Missing Details" });
   }
@@ -24,7 +24,7 @@ export const register = async (req, res) => {
 
     const hashPassword = await bcrypt.hash(password, 10);
 
-    const user = new userModel({ fullname, email, password: hashPassword });
+    const user = new userModel({ name, email, password: hashPassword });
     await user.save();
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
