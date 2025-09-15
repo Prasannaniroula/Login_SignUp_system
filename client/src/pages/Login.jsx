@@ -26,10 +26,10 @@ function Login() {
       if(data.success){
         setIsLoggedin(true);
         navigate('/');
-        toast.success(data.message);
+        toast.success(data.msg);
       }
       else{
-        toast.error(data.message);
+        toast.error(data.msg);
       }
     }
     else{
@@ -37,9 +37,10 @@ function Login() {
       if(data.success){
         setIsLoggedin(true);
         navigate('/');
+        toast.success(data.msg)
       }
       else{
-        toast.error(data.message);
+        toast.error(data.msg);
       }
    
 
@@ -47,7 +48,7 @@ function Login() {
     
   } catch (error) {
     if (error.response && error.response.data) {
-      toast.error(error.response.data.message);  // Backend message
+      toast.error(error.response.data.msg);  // Backend message
     } else {
       toast.error(error.message);  // General JS error
     }
