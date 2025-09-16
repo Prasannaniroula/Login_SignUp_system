@@ -8,7 +8,7 @@ import axios from "axios";
 function Login() {
    const navigate = useNavigate();
 
-   const {backendUrl, setIsLoggedin} = useContext(AppContent)
+   const {backendUrl, setIsLoggedin, getUserData } = useContext(AppContent)
 
   const [state, setState] = useState("Sign Up");
   const [name, setName] = useState('');
@@ -26,6 +26,7 @@ function Login() {
       if(data.success){
         setIsLoggedin(true);
         navigate('/');
+        await getUserData();
         toast.success(data.msg);
       }
       else{
@@ -36,6 +37,7 @@ function Login() {
       const {data} = await axios.post(backendUrl + '/api/auth/login', {email, password})
       if(data.success){
         setIsLoggedin(true);
+        await getUserData();
         navigate('/');
         toast.success(data.msg)
       }
