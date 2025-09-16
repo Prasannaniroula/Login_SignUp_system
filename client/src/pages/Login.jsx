@@ -42,7 +42,7 @@ function Login() {
         toast.success(data.msg)
       }
       else{
-        toast.error(data.msg);
+        toast.error(error.msg);
       }
    
 
