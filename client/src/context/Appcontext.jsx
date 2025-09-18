@@ -3,7 +3,7 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import axios from "axios";
 
-export const AppContent = createContext()
+export const appContent = createContext()
 
 export const AppContextProvider = (props)=>{
      
@@ -18,12 +18,24 @@ export const AppContextProvider = (props)=>{
                 setIsLoggedin(true);
                 getUserData();
             }
+            else{
+                setIsLoggedin(false);
+                setUserData(null);
+            }
             
         } catch (error) {
-            toast.error(error.message)
+            if (error.response && error.response.status === 401) {
+                // Not logged in (normal case) → don't show toast
+                setIsLoggedin(false);
+                setUserData(null);
+              } else {
+                // Unexpected error → show toast
+                toast.error(error.message || "Something went wrong");
+              }
             
         }
     }
+
 
     const getUserData = async ()=>{
         try {
@@ -47,8 +59,8 @@ export const AppContextProvider = (props)=>{
     }
 
     return (
-        <AppContent.Provider value={value}>
+        <appContent.Provider value={value}>
             {props.children}
-        </AppContent.Provider>
+        </appContent.Provider>
     )
 } 

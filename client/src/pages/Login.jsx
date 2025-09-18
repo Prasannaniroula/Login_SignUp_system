@@ -1,14 +1,14 @@
 import React, { useContext, useState } from "react";
 import { assets } from "../assets/assets";
 import { useNavigate } from 'react-router-dom';
-import { AppContent } from "../context/Appcontext";
+import { appContent } from "../context/Appcontext";
 import { toast } from "react-toastify";
 import axios from "axios";
 
 function Login() {
    const navigate = useNavigate();
 
-   const {backendUrl, setIsLoggedin, getUserData } = useContext(AppContent)
+   const {backendUrl, setIsLoggedin, getUserData } = useContext(appContent)
 
   const [state, setState] = useState("Sign Up");
   const [name, setName] = useState('');
@@ -27,7 +27,6 @@ function Login() {
         setIsLoggedin(true);
         navigate('/');
         await getUserData();
-        toast.success(data.msg);
       }
       else{
         toast.error(data.msg);
@@ -39,7 +38,6 @@ function Login() {
         setIsLoggedin(true);
         await getUserData();
         navigate('/');
-        toast.success(data.msg)
       }
       else{
         toast.error(error.msg);
@@ -52,7 +50,7 @@ function Login() {
     if (error.response && error.response.data) {
       toast.error(error.response.data.msg);  // Backend message
     } else {
-      toast.error(error.message);  // General JS error
+      toast.error(error.message|| "Something went wrong");  // General JS error
     }
   }
 }

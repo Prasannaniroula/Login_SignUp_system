@@ -1,10 +1,10 @@
 import React, { useContext } from 'react'
 import { assets } from '../assets/assets'
-import { AppContent } from '../context/Appcontext'
+import { appContent } from '../context/Appcontext'
 
 const Header = () => {
 
-        const {userData} = useContext(AppContent);
+        const {userData} = useContext(appContent);
 
   return (
     <div className='flex flex-col items-center mt-20 px-4 text-center text-gray-800'>
