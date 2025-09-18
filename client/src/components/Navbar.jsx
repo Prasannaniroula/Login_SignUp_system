@@ -1,14 +1,15 @@
 import React, { useContext } from 'react'
 import { assets } from '../assets/assets'
 import {useNavigate} from "react-router-dom"
-import { appContent } from '../context/Appcontext';
+import { AppContent } from '../context/Appcontext';
 import { toast } from 'react-toastify';
+import axios from 'axios';
 
 function Navbar() {
 
   const navigate = useNavigate();
    
-  const {userData, backendUrl, setUserData, setIsLoggedin} = useContext(appContent)
+  const {userData, backendUrl, setUserData, setIsLoggedin} = useContext(AppContent)
 
   const logout = async ()=>{
     try {
